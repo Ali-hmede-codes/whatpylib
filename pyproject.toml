@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whatpylib"
+version = "0.1.0"
+description = "A Python library for WhatsApp Web communication using the Multi-Device protocol"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "WhatPyLib Contributors"}
+]
+keywords = ["whatsapp", "websocket", "messaging", "automation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Communications :: Chat",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Framework :: AsyncIO",
+]
+
+dependencies = [
+    "websockets>=12.0",
+    "cryptography>=41.0",
+    "protobuf>=4.25",
+    "qrcode>=7.4",
+    "Pillow>=10.0",
+    "aiohttp>=3.9",
+    "pydantic>=2.5",
+    "python-axolotl>=0.2.2",
+    "curve25519-donna>=1.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-asyncio>=0.21",
+    "pytest-cov>=4.1",
+    "black>=23.0",
+    "ruff>=0.1",
+    "mypy>=1.7",
+]
+
+[project.urls]
+Homepage = "https://github.com/whatpylib/whatpylib"
+Documentation = "https://whatpylib.readthedocs.io"
+Repository = "https://github.com/whatpylib/whatpylib"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["whatpylib*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true
