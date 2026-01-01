@@ -1,0 +1,436 @@
+syntax = "proto3";
+
+package wa;
+
+message WebMessageInfo {
+    required MessageKey key = 1;
+    optional Message message = 2;
+    optional uint64 messageTimestamp = 3;
+    optional Status status = 4;
+    optional string participant = 5;
+    optional uint64 ignore = 16;
+    optional bool starred = 17;
+    optional bool broadcast = 18;
+    optional string pushName = 19;
+    optional bytes mediaCiphertextSha256 = 20;
+    optional bool multicast = 21;
+    optional bool urlText = 22;
+    optional bool urlNumber = 23;
+    optional uint64 messageStubType = 24;
+    optional bool clearMedia = 25;
+    repeated string messageStubParameters = 26;
+    optional uint32 duration = 27;
+    repeated string labels = 28;
+    optional PaymentInfo paymentInfo = 29;
+    optional LiveLocationMessage finalLiveLocation = 30;
+    optional PaymentInfo quotedPaymentInfo = 31;
+    optional uint64 ephemeralStartTimestamp = 32;
+    optional uint32 ephemeralDuration = 33;
+    optional bool ephemeralOffToOn = 34;
+    optional bool ephemeralOutOfSync = 35;
+    optional bool viewMode = 36;
+    optional string actionLink = 37;
+    
+    enum Status {
+        ERROR = 0;
+        PENDING = 1;
+        SERVER_ACK = 2;
+        DELIVERY_ACK = 3;
+        READ = 4;
+        PLAYED = 5;
+    }
+}
+
+message MessageKey {
+    optional string remoteJid = 1;
+    optional bool fromMe = 2;
+    optional string id = 3;
+    optional string participant = 4;
+}
+
+message Message {
+    optional string conversation = 1;
+    optional SenderKeyDistributionMessage senderKeyDistributionMessage = 2;
+    optional ImageMessage imageMessage = 3;
+    optional ContactMessage contactMessage = 4;
+    optional LocationMessage locationMessage = 5;
+    optional ExtendedTextMessage extendedTextMessage = 6;
+    optional DocumentMessage documentMessage = 7;
+    optional AudioMessage audioMessage = 8;
+    optional VideoMessage videoMessage = 9;
+    optional Call call = 10;
+    optional Chat chat = 11;
+    optional ProtocolMessage protocolMessage = 12;
+    optional ContactsArrayMessage contactsArrayMessage = 13;
+    optional HighlyStructuredMessage highlyStructuredMessage = 14;
+    optional SenderKeyDistributionMessage fastRatchetSenderKeyDistributionMessage = 15;
+    optional SendPaymentMessage sendPaymentMessage = 16;
+    optional LiveLocationMessage liveLocationMessage = 18;
+    optional RequestPaymentMessage requestPaymentMessage = 22;
+    optional DeclinePaymentRequestMessage declinePaymentRequestMessage = 23;
+    optional CancelPaymentRequestMessage cancelPaymentRequestMessage = 24;
+    optional TemplateMessage templateMessage = 25;
+    optional StickerMessage stickerMessage = 26;
+    optional GroupInviteMessage groupInviteMessage = 28;
+    optional TemplateButtonReplyMessage templateButtonReplyMessage = 29;
+    optional ProductMessage productMessage = 30;
+    optional DeviceSentMessage deviceSentMessage = 31;
+    optional MessageContextInfo messageContextInfo = 35;
+    optional ListMessage listMessage = 36;
+    optional FutureProofMessage viewOnceMessage = 37;
+    optional OrderMessage orderMessage = 38;
+    optional ListResponseMessage listResponseMessage = 39;
+    optional FutureProofMessage ephemeralMessage = 40;
+    optional InvoiceMessage invoiceMessage = 41;
+    optional ButtonsMessage buttonsMessage = 42;
+    optional ButtonsResponseMessage buttonsResponseMessage = 43;
+    optional PaymentInviteMessage paymentInviteMessage = 44;
+    optional InteractiveMessage interactiveMessage = 45;
+    optional ReactionMessage reactionMessage = 46;
+    optional StickerSyncRmrMessage stickerSyncRmrMessage = 47;
+    optional InteractiveResponseMessage interactiveResponseMessage = 48;
+    optional PollCreationMessage pollCreationMessage = 49;
+    optional PollUpdateMessage pollUpdateMessage = 50;
+    optional KeepInChatMessage keepInChatMessage = 51;
+    optional DocumentMessage documentWithCaptionMessage = 53;
+    optional FutureProofMessage requestPhoneNumberMessage = 54;
+    optional FutureProofMessage viewOnceMessageV2 = 55;
+    optional EncReactionMessage encReactionMessage = 56;
+    optional FutureProofMessage editedMessage = 58;
+    optional FutureProofMessage viewOnceMessageV2Extension = 59;
+    optional PollCreationMessage pollCreationMessageV2 = 60;
+    optional ScheduledCallCreationMessage scheduledCallCreationMessage = 61;
+    optional FutureProofMessage groupMentionedMessage = 62;
+    optional PinInChatMessage pinInChatMessage = 63;
+    optional PollCreationMessage pollCreationMessageV3 = 64;
+    optional ScheduledCallEditMessage scheduledCallEditMessage = 65;
+    optional VideoMessage ptvMessage = 66;
+    optional FutureProofMessage botInvokeMessage = 67;
+}
+
+message ImageMessage {
+    optional string url = 1;
+    optional string mimetype = 2;
+    optional string caption = 3;
+    optional bytes fileSha256 = 4;
+    optional uint64 fileLength = 5;
+    optional uint32 height = 6;
+    optional uint32 width = 7;
+    optional bytes mediaKey = 8;
+    optional bytes fileEncSha256 = 9;
+    repeated InteractiveAnnotation interactiveAnnotations = 10;
+    optional string directPath = 11;
+    optional int64 mediaKeyTimestamp = 12;
+    optional bytes jpegThumbnail = 16;
+    optional ContextInfo contextInfo = 17;
+    optional bytes firstScanSidecar = 18;
+    optional uint32 firstScanLength = 19;
+    optional uint32 experimentGroupId = 20;
+    optional bytes scansSidecar = 21;
+    repeated uint32 scanLengths = 22;
+    optional bytes midQualityFileSha256 = 23;
+    optional bytes midQualityFileEncSha256 = 24;
+    optional bool viewOnce = 25;
+    optional string thumbnailDirectPath = 26;
+    optional bytes thumbnailSha256 = 27;
+    optional bytes thumbnailEncSha256 = 28;
+    optional string staticUrl = 29;
+}
+
+message VideoMessage {
+    optional string url = 1;
+    optional string mimetype = 2;
+    optional bytes fileSha256 = 3;
+    optional uint64 fileLength = 4;
+    optional uint32 seconds = 5;
+    optional bytes mediaKey = 6;
+    optional string caption = 7;
+    optional bool gifPlayback = 8;
+    optional uint32 height = 9;
+    optional uint32 width = 10;
+    optional bytes fileEncSha256 = 11;
+    repeated InteractiveAnnotation interactiveAnnotations = 12;
+    optional string directPath = 13;
+    optional int64 mediaKeyTimestamp = 14;
+    optional bytes jpegThumbnail = 16;
+    optional ContextInfo contextInfo = 17;
+    optional bool streamingSidecar = 18;
+    optional bool viewOnce = 19;
+    optional string thumbnailDirectPath = 20;
+    optional bytes thumbnailSha256 = 21;
+    optional bytes thumbnailEncSha256 = 22;
+    optional string staticUrl = 23;
+}
+
+message AudioMessage {
+    optional string url = 1;
+    optional string mimetype = 2;
+    optional bytes fileSha256 = 3;
+    optional uint64 fileLength = 4;
+    optional uint32 seconds = 5;
+    optional bool ptt = 6;
+    optional bytes mediaKey = 7;
+    optional bytes fileEncSha256 = 8;
+    optional string directPath = 9;
+    optional int64 mediaKeyTimestamp = 10;
+    optional ContextInfo contextInfo = 17;
+    optional bytes streamingSidecar = 18;
+    optional bytes waveform = 19;
+}
+
+message DocumentMessage {
+    optional string url = 1;
+    optional string mimetype = 2;
+    optional string title = 3;
+    optional bytes fileSha256 = 4;
+    optional uint64 fileLength = 5;
+    optional uint32 pageCount = 6;
+    optional bytes mediaKey = 7;
+    optional string fileName = 8;
+    optional bytes fileEncSha256 = 9;
+    optional string directPath = 10;
+    optional int64 mediaKeyTimestamp = 11;
+    optional bool contactVcard = 12;
+    optional string thumbnailDirectPath = 13;
+    optional bytes thumbnailSha256 = 14;
+    optional bytes thumbnailEncSha256 = 15;
+    optional bytes jpegThumbnail = 16;
+    optional ContextInfo contextInfo = 17;
+    optional string caption = 18;
+}
+
+message ExtendedTextMessage {
+    optional string text = 1;
+    optional string matchedText = 2;
+    optional string canonicalUrl = 4;
+    optional string description = 5;
+    optional string title = 6;
+    optional fixed32 textArgb = 7;
+    optional fixed32 backgroundArgb = 8;
+    optional FontType font = 9;
+    optional PreviewType previewType = 10;
+    optional bytes jpegThumbnail = 16;
+    optional ContextInfo contextInfo = 17;
+    optional bool doNotPlayInline = 18;
+    optional string thumbnailDirectPath = 19;
+    optional bytes thumbnailSha256 = 20;
+    optional bytes thumbnailEncSha256 = 21;
+    optional bytes mediaKey = 22;
+    optional int64 mediaKeyTimestamp = 23;
+    optional uint32 thumbnailHeight = 24;
+    optional uint32 thumbnailWidth = 25;
+    optional string inviteLinkGroupTypeV2 = 26;
+    
+    enum FontType {
+        SANS_SERIF = 0;
+        SERIF = 1;
+        NORICAN_REGULAR = 2;
+        BRYNDAN_WRITE = 3;
+        BEBASNEUE_REGULAR = 4;
+        OSWALD_HEAVY = 5;
+    }
+    
+    enum PreviewType {
+        NONE = 0;
+        VIDEO = 1;
+    }
+}
+
+message ContextInfo {
+    optional string stanzaId = 1;
+    optional string participant = 2;
+    optional Message quotedMessage = 3;
+    optional string remoteJid = 4;
+    repeated string mentionedJid = 15;
+    optional string conversionSource = 18;
+    optional bytes conversionData = 19;
+    optional uint32 conversionDelaySeconds = 20;
+    optional uint32 forwardingScore = 21;
+    optional bool isForwarded = 22;
+    optional AdReplyInfo quotedAd = 23;
+    optional MessageKey placeholderKey = 24;
+    optional uint32 expiration = 25;
+    optional int64 ephemeralSettingTimestamp = 26;
+    optional bytes ephemeralSharedSecret = 27;
+    optional ExternalAdReplyInfo externalAdReply = 28;
+    optional string entryPointConversionSource = 29;
+    optional string entryPointConversionApp = 30;
+    optional uint32 entryPointConversionDelaySeconds = 31;
+    optional DisappearingMode disappearingMode = 32;
+    optional string actionLink = 33;
+    optional string groupSubject = 34;
+    optional string parentGroupJid = 35;
+    optional string trustBannerType = 37;
+    optional uint32 trustBannerAction = 38;
+    optional bool isSampled = 39;
+    repeated string groupMentions = 40;
+    optional UTMInfo utm = 41;
+}
+
+message SenderKeyDistributionMessage {
+    optional string groupId = 1;
+    optional bytes axolotlSenderKeyDistributionMessage = 2;
+}
+
+message StickerMessage {
+    optional string url = 1;
+    optional bytes fileSha256 = 2;
+    optional bytes fileEncSha256 = 3;
+    optional bytes mediaKey = 4;
+    optional string mimetype = 5;
+    optional uint32 height = 6;
+    optional uint32 width = 7;
+    optional string directPath = 8;
+    optional uint64 fileLength = 9;
+    optional int64 mediaKeyTimestamp = 10;
+    optional uint32 firstFrameLength = 11;
+    optional bytes firstFrameSidecar = 12;
+    optional bool isAnimated = 13;
+    optional bytes pngThumbnail = 16;
+    optional ContextInfo contextInfo = 17;
+    optional int64 stickerSentTs = 18;
+    optional bool isAvatar = 19;
+    optional bool isAiSticker = 20;
+}
+
+message ProtocolMessage {
+    optional MessageKey key = 1;
+    optional Type type = 2;
+    optional uint32 ephemeralExpiration = 4;
+    optional int64 ephemeralSettingTimestamp = 5;
+    optional HistorySyncNotification historySyncNotification = 6;
+    optional AppStateSyncKeyShare appStateSyncKeyShare = 7;
+    optional AppStateSyncKeyRequest appStateSyncKeyRequest = 8;
+    optional InitialSecurityNotificationSettingSync initialSecurityNotificationSettingSync = 9;
+    optional AppStateFatalExceptionNotification appStateFatalExceptionNotification = 10;
+    optional DisappearingMode disappearingMode = 11;
+    optional EditedMessage editedMessage = 14;
+    optional uint64 timestampMs = 15;
+    optional PeerDataOperationRequestMessage peerDataOperationRequestMessage = 16;
+    optional PeerDataOperationRequestResponseMessage peerDataOperationRequestResponseMessage = 17;
+    optional BotFeedbackMessage botFeedbackMessage = 18;
+    optional InvokerBotMode invokerBotMode = 19;
+    optional BotMemories botMemories = 20;
+    
+    enum Type {
+        REVOKE = 0;
+        EPHEMERAL_SETTING = 3;
+        EPHEMERAL_SYNC_RESPONSE = 4;
+        HISTORY_SYNC_NOTIFICATION = 5;
+        APP_STATE_SYNC_KEY_SHARE = 6;
+        APP_STATE_SYNC_KEY_REQUEST = 7;
+        MSG_FANOUT_BACKFILL_REQUEST = 8;
+        INITIAL_SECURITY_NOTIFICATION_SETTING_SYNC = 9;
+        APP_STATE_FATAL_EXCEPTION_NOTIFICATION = 10;
+        SHARE_PHONE_NUMBER = 11;
+        MESSAGE_EDIT = 14;
+        PEER_DATA_OPERATION_REQUEST_MESSAGE = 16;
+        PEER_DATA_OPERATION_REQUEST_RESPONSE_MESSAGE = 17;
+        REQUEST_WELCOME_MESSAGE = 18;
+        BOT_FEEDBACK_MESSAGE = 19;
+        MEDIA_NOTIFY = 20;
+        CLOUD_API_THREAD_CONTROL_NOTIFICATION = 21;
+        LID_MIGRATION_NOTIFICATION = 22;
+        REMINDER_NOTIFICATION = 23;
+        BOT_MEMORIES = 24;
+    }
+}
+
+message ReactionMessage {
+    optional MessageKey key = 1;
+    optional string text = 2;
+    optional string groupingKey = 3;
+    optional int64 senderTimestampMs = 4;
+}
+
+message PollCreationMessage {
+    optional bytes encKey = 1;
+    optional string name = 2;
+    repeated Option options = 3;
+    optional uint32 selectableOptionsCount = 4;
+    optional ContextInfo contextInfo = 5;
+    
+    message Option {
+        optional string optionName = 1;
+    }
+}
+
+message PollUpdateMessage {
+    optional MessageKey pollCreationMessageKey = 1;
+    optional bytes encPayload = 2;
+    optional bytes encIv = 3;
+    optional int64 senderTimestampMs = 4;
+}
+
+message ContactMessage {
+    optional string displayName = 1;
+    optional string vcard = 16;
+    optional ContextInfo contextInfo = 17;
+}
+
+message LocationMessage {
+    optional double degreesLatitude = 1;
+    optional double degreesLongitude = 2;
+    optional string name = 3;
+    optional string address = 4;
+    optional string url = 5;
+    optional bool isLive = 6;
+    optional uint32 accuracyInMeters = 7;
+    optional float speedInMps = 8;
+    optional uint32 degreesClockwiseFromMagneticNorth = 9;
+    optional string comment = 11;
+    optional bytes jpegThumbnail = 16;
+    optional ContextInfo contextInfo = 17;
+}
+
+// Placeholders for other types to avoid errors
+message PaymentInfo {}
+message LiveLocationMessage {}
+message Call {}
+message Chat {}
+message ContactsArrayMessage {}
+message HighlyStructuredMessage {}
+message SendPaymentMessage {}
+message RequestPaymentMessage {}
+message DeclinePaymentRequestMessage {}
+message CancelPaymentRequestMessage {}
+message TemplateMessage {}
+message GroupInviteMessage {}
+message TemplateButtonReplyMessage {}
+message ProductMessage {}
+message DeviceSentMessage {}
+message MessageContextInfo {}
+message ListMessage {}
+message FutureProofMessage {
+    optional Message message = 1;
+}
+message OrderMessage {}
+message ListResponseMessage {}
+message InvoiceMessage {}
+message ButtonsMessage {}
+message ButtonsResponseMessage {}
+message PaymentInviteMessage {}
+message InteractiveMessage {}
+message StickerSyncRmrMessage {}
+message InteractiveResponseMessage {}
+message KeepInChatMessage {}
+message EncReactionMessage {}
+message ScheduledCallCreationMessage {}
+message PinInChatMessage {}
+message ScheduledCallEditMessage {}
+message InteractiveAnnotation {}
+message AdReplyInfo {}
+message ExternalAdReplyInfo {}
+message DisappearingMode {}
+message UTMInfo {}
+message HistorySyncNotification {}
+message AppStateSyncKeyShare {}
+message AppStateSyncKeyRequest {}
+message InitialSecurityNotificationSettingSync {}
+message AppStateFatalExceptionNotification {}
+message EditedMessage {}
+message PeerDataOperationRequestMessage {}
+message PeerDataOperationRequestResponseMessage {}
+message BotFeedbackMessage {}
+message InvokerBotMode {}
+message BotMemories {}
