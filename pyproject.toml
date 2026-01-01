@@ -49,9 +49,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/whatpylib/whatpylib"
-Documentation = "https://whatpylib.readthedocs.io"
-Repository = "https://github.com/whatpylib/whatpylib"
+Homepage = "https://github.com/Ali-hmede-codes/whatpylib"
+Documentation = "https://github.com/Ali-hmede-codes/whatpylib/blob/main/README.md"
+Repository = "https://github.com/Ali-hmede-codes/whatpylib"
 
 [tool.setuptools.packages.find]
 where = ["."]
