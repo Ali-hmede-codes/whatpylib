@@ -198,6 +198,8 @@ client = WhatsAppClient(
 
 ## Authentication
 
+For a detailed guide on authentication, socket handling, and session persistence, see [docs/authentication.md](docs/authentication.md).
+
 ### QR Code (Default)
 
 On first run, a QR code will be displayed. Scan it with WhatsApp:
