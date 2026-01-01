@@ -23,7 +23,7 @@ pip install whatpylib
 Or from source:
 
 ```bash
-git clone https://github.com/whatpylib/whatpylib.git
+git clone https://github.com/Ali-hmede-codes/whatpylib.git
 cd whatpylib
 pip install -e .
 ```
