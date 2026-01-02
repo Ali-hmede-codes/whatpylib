@@ -7,6 +7,7 @@ The WhatsAppClient provides a high-level API for interacting with WhatsApp.
 import asyncio
 from dataclasses import dataclass, field
 from typing import Any, Callable, Coroutine, Optional, Union, List
+import base64
 
 from whatpylib.config import Config, ConnectionState
 from whatpylib.connection.socket import WhatsAppSocket
@@ -221,19 +222,133 @@ class WhatsAppClient:
         """Perform authentication (QR code flow)."""
         logger.info("Starting authentication...")
         
-        # Request QR code
-        # This is a placeholder - actual implementation depends on
-        # the exact server response format
+        # Ensure we have keys
+        await self._get_or_generate_keys()
         
-        # Wait for QR scan or pairing
-        await self.events.wait_for(
-            "auth.success",
-            timeout=self.config.qr_timeout,
-        )
+        # Create future for ref
+        ref_future = asyncio.get_event_loop().create_future()
         
-        # Save auth state
+        # Temporary handler for connection failure (which contains the ref in 401)
+        # or IQ error (sometimes 401 comes as stream error or failure node)
+        # But in multi-device, the ref usually comes in the <failure> node with 401 status
+        # OR as part of the initial handshake response if something is wrong.
+        # Actually, if we are fresh, we sent "client_hello". Server responds with "success" or "failure".
+        # If "failure" (401), it contains the ref.
+        
+        async def on_node(node: BinaryNode):
+            if node.tag == "failure" and node.get_attr("reason") == "401":
+                 # Extract ref from children or content?
+                 # Usually it's in a child <ref>content</ref> or similar
+                 # Checking other implementations... 
+                 # Often it's in the device props or just attached.
+                 # Let's assume for now it might be in the content or location attr
+                 # Actually, standard behavior: <failure reason="401" location="EU" ...><ref>THE_REF</ref></failure>
+                 
+                 # But we need to check how binary decoder handles it.
+                 # If node.content is bytes, we might need to look there.
+                 # If node.content is List[BinaryNode], we look for 'ref' child.
+                 
+                if isinstance(node.content, list):
+                    for child in node.content:
+                        if isinstance(child, BinaryNode) and child.tag == "ref":
+                            if not ref_future.done():
+                                ref_future.set_result(child.content) # Content should be bytes
+                                return
+
+                # Fallback: check if content itself is the ref (unlikely for failure node)
+                pass
+
+        # We need to hook into the socket's processing to catch this BEFORE it might throw an error or disconnect.
+        # But 'message.received' emits every node.
+        
+        handler = self.events.on("message.received", on_node)
+        
+        try:
+            # Wait for ref (with timeout)
+            # The ref should come shortly after connection if we are not authenticated.
+            try:
+                ref_bytes = await asyncio.wait_for(ref_future, timeout=self.config.qr_timeout)
+                if isinstance(ref_bytes, bytes):
+                    ref = ref_bytes.decode("utf-8")
+                else:
+                    ref = str(ref_bytes)
+                    
+                logger.debug(f"Received QR ref: {ref}")
+                
+                # Generate QR data
+                # We need public key and client ID (Identity Key)
+                
+                noise_pub = base64.b64decode(self.auth_state.creds.noise_key["public"])
+                identity_pub = base64.b64decode(self.auth_state.creds.identity_key["public"])
+                
+                from whatpylib.auth.qr import generate_qr_data
+                qr_data = generate_qr_data(
+                    ref=ref,
+                    public_key=noise_pub,
+                    client_id=base64.b64encode(identity_pub).decode("ascii"), # QR format expects base64 client_id?
+                    # Wait, QRData.to_string does: ref, b64(pub), client_id
+                    # Standard is: ref, b64(noise_pub), b64(identity_pub)
+                    # Let's check QRData definition in qr.py
+                    # It says: client_id: str. 
+                    # And to_string: f"{self.ref},{public_key_b64},{self.client_id}"
+                    # So client_id should be the BASE64 of identity public key.
+                )
+                
+                # Display QR
+                await self._qr_handler.handle_qr(qr_data)
+                
+                # Wait for success
+                await self.events.wait_for("auth.success", timeout=self.config.qr_timeout)
+                logger.info("Authentication successful")
+                
+                # Save state
+                await self.auth_state.save()
+                
+            except asyncio.TimeoutError:
+                logger.error("Timed out waiting for QR ref or scan")
+                raise TimeoutError("Authentication timed out")
+                
+        finally:
+            self.events.off("message.received", handler)
+
+    async def _get_or_generate_keys(self) -> None:
+        """Ensure device keys exist."""
+        creds = self.auth_state.creds
+        
+        if not creds.noise_key:
+            from whatpylib.connection.noise import NoiseKeys
+            keys = NoiseKeys.generate()
+            creds.noise_key = {
+                "private": base64.b64encode(keys.get_private_bytes()).decode("ascii"),
+                "public": base64.b64encode(keys.get_public_bytes()).decode("ascii"),
+            }
+            # Update socket's static keypair so it uses it during handshake (if we were reconnecting)
+            # But handshake happens in connect(). 
+            # If we generated new keys, we might need them for NEXT handshake or THIS one?
+            # Actually, for QR login, we use Ephemeral keys for Noise XX. 
+            # Static keys are for when we are already authenticated (Noise IK/XX fallback).
+            # But the QR code contains the Static Public Key.
+            # So we MUST have generated it.
+            
+            # Note: socket.py uses self.local_static. If it's None, it generates one.
+            # We should sync them.
+            if self._socket:
+                 self._socket.set_static_keypair(keys)
+
+        if not creds.identity_key:
+             # Using NoiseKeys/X25519 for Identity too (Signal uses DJB curve25519)
+             from whatpylib.connection.noise import NoiseKeys
+             keys = NoiseKeys.generate()
+             creds.identity_key = {
+                "private": base64.b64encode(keys.get_private_bytes()).decode("ascii"),
+                "public": base64.b64encode(keys.get_public_bytes()).decode("ascii"),
+             }
+
+        if not creds.registration_id:
+             import random
+             creds.registration_id = random.randint(1, 16380)
+
         await self.auth_state.save()
-        logger.info("Authentication successful")
     
     async def _restore_session(self) -> None:
         """Restore existing session."""
