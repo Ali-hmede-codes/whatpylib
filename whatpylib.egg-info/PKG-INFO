@@ -4,9 +4,9 @@ Version: 0.1.0
 Summary: A Python library for WhatsApp Web communication using the Multi-Device protocol
 Author: WhatPyLib Contributors
 License: MIT
-Project-URL: Homepage, https://github.com/whatpylib/whatpylib
-Project-URL: Documentation, https://whatpylib.readthedocs.io
-Project-URL: Repository, https://github.com/whatpylib/whatpylib
+Project-URL: Homepage, https://github.com/Ali-hmede-codes/whatpylib
+Project-URL: Documentation, https://github.com/Ali-hmede-codes/whatpylib/blob/main/README.md
+Project-URL: Repository, https://github.com/Ali-hmede-codes/whatpylib
 Keywords: whatsapp,websocket,messaging,automation
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Developers
@@ -64,7 +64,7 @@ pip install whatpylib
 Or from source:
 
 ```bash
-git clone https://github.com/whatpylib/whatpylib.git
+git clone https://github.com/Ali-hmede-codes/whatpylib.git
 cd whatpylib
 pip install -e .
 ```
@@ -238,6 +238,8 @@ client = WhatsAppClient(
 ```
 
 ## Authentication
+
+For a detailed guide on authentication, socket handling, and session persistence, see [docs/authentication.md](docs/authentication.md).
 
 ### QR Code (Default)
 
