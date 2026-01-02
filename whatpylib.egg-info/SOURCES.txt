@@ -1,6 +1,7 @@
 LICENSE
 README.md
 pyproject.toml
+tests/test_auth_qr.py
 tests/test_binary.py
 tests/test_proto.py
 tests/test_utils.py

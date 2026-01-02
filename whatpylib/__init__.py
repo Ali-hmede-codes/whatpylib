@@ -11,7 +11,7 @@ Example usage:
     ...     await client.send_message("1234567890@s.whatsapp.net", "Hello!")
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "WhatPyLib Contributors"
 
 from whatpylib.client import WhatsAppClient
