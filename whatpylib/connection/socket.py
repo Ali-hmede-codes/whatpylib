@@ -135,7 +135,12 @@ class WhatsAppSocket:
             )
             
             # Perform Noise handshake
-            await self._perform_handshake()
+            try:
+                await self._perform_handshake()
+            except ValueError as e:
+                if "Handshake 2 message too short" in str(e):
+                    logger.error("Handshake failed: Message too short. This usually means the WhatsApp Web version is outdated or the protocol has changed.")
+                raise e
             
             # Reset reconnect count on success
             self._reconnect_count = 0

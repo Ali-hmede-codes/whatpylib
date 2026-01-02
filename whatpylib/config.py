@@ -13,8 +13,8 @@ WA_WEB_ORIGIN = "https://web.whatsapp.com"
 WA_UPLOAD_URL = "https://mmg.whatsapp.net"
 
 # Protocol versions
-WA_WEB_VERSION = [2, 2413, 51]  # WhatsApp Web version
-WA_WEB_VERSION_HASH = "2.2413.51"
+WA_WEB_VERSION = [2, 3000, 1012734542]  # WhatsApp Web version
+WA_WEB_VERSION_HASH = "2.3000.1012734542"
 
 # Binary protocol constants
 NOISE_PROTOCOL_NAME = b"Noise_XX_25519_AESGCM_SHA256\x00\x00\x00\x00"
@@ -125,7 +125,7 @@ class Config:
         return (
             f"Mozilla/5.0 ({self.os_name} {self.os_version}) "
             f"AppleWebKit/537.36 (KHTML, like Gecko) "
-            f"Chrome/120.0.0.0 Safari/537.36"
+            f"Chrome/138.0.0.0 Safari/537.36"
         )
     
     def get_device_props(self) -> dict:
